@@ -105,8 +105,6 @@ class ChatBot {
         this.instance.on('postback', this.handlePostBacks);
 
         // Help functions
-        this.instance.setGetStartedButton(this.handleHelp);
-        this.instance.setGreetingText(this.handleHelp);
         this.instance.hear('help', this.handleHelp);
     }
 
