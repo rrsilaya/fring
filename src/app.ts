@@ -2,6 +2,8 @@ import * as bodyParser from 'body-parser';
 import * as express from 'express';
 import * as logger from 'morgan';
 
+import router from './router';
+
 class App {
     public app: express.Express;
     public port: number;
@@ -32,7 +34,9 @@ class App {
         this.app.use(logger('dev'));
     }
 
-    private setRoutes = (): void => {}
+    private setRoutes = (): void => {
+        this.app.use(router);
+    }
 }
 
 export default App;
