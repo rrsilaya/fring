@@ -31,26 +31,30 @@ class ChatBot {
         const results = await this.searchHandler.getSearchResults(query);
         chat.sendAction(BotAction.TYPING_OFF);
 
-        const textSummary = results.reduce(
-            (response, result, i) => `${response}\n\n[${i + 1}] ${result.name}\n${result.description}\n(${result.url})`,
-            `You searched for "${query}". Here are your results:`,
-        );
-        const selection = results.map((result) => ({
-            title: result.name,
-            subtitle: result.url,
-            buttons: [{
-                type: 'postback',
-                title: 'View',
-                payload: `${PostBackType.SEARCH_VIEW}:${result.url}`,
-            }],
-        }));
+        if (results.length) {
+            const textSummary = results.reduce(
+                (response, result, i) => `${response}\n\n[${i + 1}] ${result.name}\n${result.description}\n(${result.url})`,
+                `You searched for "${query}". Here are your results:`,
+            );
+            const selection = results.map((result) => ({
+                title: result.name,
+                subtitle: result.url,
+                buttons: [{
+                    type: 'postback',
+                    title: 'View',
+                    payload: `${PostBackType.SEARCH_VIEW}:${result.url}`,
+                }],
+            }));
 
-        try {
-            await chat.say(chunkMessage(textSummary));
-            await chat.sendGenericTemplate(selection, []);
-        } catch (error) {
-            await chat.say('I\'m experiencing a momentary hiccup. Please bear with me.');
-            console.log(error);
+            try {
+                await chat.say(chunkMessage(textSummary));
+                await chat.sendGenericTemplate(selection, []);
+            } catch (error) {
+                chat.say('I\'m experiencing a momentary hiccup. Please bear with me.');
+                console.log(error);
+            }
+        } else {
+            chat.say('I can\'t seem to find anything related to your query. Can you try again?');
         }
     }
 
@@ -73,7 +77,15 @@ class ChatBot {
         }
     }
 
-    handlePostBacks = async (payload, chat) => {
+    handleHelp = (_, chat) => {
+        chat.say([
+            'Hi there! My name is Fring. I can help you search the internet for free. I aim to make information on the internet easily available especially to those without means to get them.',
+            'You can call me if you need my help: `fring <search query>`',
+            'I\'m still a baby so I can handle 5 search results at most at a time. 😅',
+        ]);
+    }
+
+    handlePostBacks = (payload, chat) => {
         const { payload: data } = payload.postback;
         const postbackData = parsePostBack(data);
 
@@ -91,6 +103,11 @@ class ChatBot {
     start = () => {
         this.instance.hear(/fring (.*)/i, this.handleSearchQuery);
         this.instance.on('postback', this.handlePostBacks);
+
+        // Help functions
+        this.instance.setGetStartedButton(this.handleHelp);
+        this.instance.setGreetingText(this.handleHelp);
+        this.instance.hear('help', this.handleHelp);
     }
 
     getInstance = () => {
