@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { ResponseCode } from 'utils';
-import chatbot from './chatbot';
+import ChatBot from './chatbot';
 import { SearchHandler } from 'handlers';
 
 const router = Router();
@@ -8,7 +8,11 @@ const router = Router();
 router.get('/ping', (_, res) => res.send('pong'));
 router.get('/webhook', (req, res) => res.send(req.query['hub.challenge']));
 router.post('/webhook', (req, res) => {
-    chatbot.handleFacebookData(req.body);
+    const chatbot = new ChatBot();
+
+    chatbot.start();
+    chatbot.getInstance().handleFacebookData(req.body);
+
     return res.sendStatus(ResponseCode.OK);
 });
 

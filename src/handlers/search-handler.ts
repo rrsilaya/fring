@@ -23,7 +23,7 @@ class SearchHandler {
     private client;
     private maxResults;
 
-    constructor(accessKey = process.env.BING_ACCESS_KEY, maxResults = 3) {
+    constructor(accessKey = process.env.BING_ACCESS_KEY, maxResults = 5) {
         this.credentials = new CognitiveServicesCredentials(accessKey);
         this.client = new WebSearchAPIClient(this.credentials);
         this.maxResults = maxResults;
