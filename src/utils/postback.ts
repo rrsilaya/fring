@@ -4,6 +4,6 @@ export interface PostBack {
 }
 
 export const parsePostBack = (payload: string): PostBack => {
-    const [, type, data] = payload.match(/(\w+):(.*)/i);
+    const [, type, data] = payload.match(/(\w+):?(.*)/i);
     return { type, data };
 }

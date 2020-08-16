@@ -32,23 +32,18 @@ class ChatBot {
         chat.sendAction(BotAction.TYPING_OFF);
 
         if (results.length) {
-            const textSummary = results.reduce(
-                (response, result, i) => `${response}\n\n[${i + 1}] ${result.name}\n${result.description}\n(${result.url})`,
-                `You searched for "${query}". Here are your results:`,
-            );
-            const selection = results.map((result) => ({
-                title: result.name,
-                subtitle: result.url,
+            const resultSummaries = results.map((result) => ({
+                text: `${result.name}\n---\n${result.description}\n(Source: ${result.url})`,
                 buttons: [{
                     type: 'postback',
-                    title: 'View',
+                    title: 'Read',
                     payload: `${PostBackType.SEARCH_VIEW}:${result.url}`,
                 }],
             }));
 
             try {
-                await chat.say(chunkMessage(textSummary));
-                await chat.sendGenericTemplate(selection, []);
+                await chat.say(`You searched for "${query}". Here are your results:`);
+                await chat.say(resultSummaries);
             } catch (error) {
                 chat.say('I\'m experiencing a momentary hiccup. Please bear with me.');
                 console.log(error);
@@ -67,8 +62,13 @@ class ChatBot {
             const { title, content } = await this.searchHandler.getSiteData(url);
             chat.sendAction(BotAction.TYPING_OFF);
 
+            let chunks = chunkMessage(`${title}\n---\n${content}`);
+            if (chunks.length > 1) {
+                chunks = chunks.map((chunk, i) => `${chunk}\n\n[Part ${i + 1} of ${chunks.length}]`);
+            }
+
             await chat.say([
-                ...chunkMessage(`${title}\n---\n${content}`),
+                ...chunks,
                 `Source: ${url}`,
             ]);
         } catch (error) {

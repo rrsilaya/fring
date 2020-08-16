@@ -56,6 +56,7 @@ buck-out/
 *.jsbundle
 
 .env
+.env.prod
 .cache
 docs/
 .mysql

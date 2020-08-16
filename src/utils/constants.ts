@@ -10,6 +10,7 @@ export enum BotAction {
 
 export enum PostBackType {
     SEARCH_VIEW = 'SEARCH_VIEW',
+    READ_MORE = 'READ_MORE',
 }
 
 export enum ResponseCode {
