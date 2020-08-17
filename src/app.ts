@@ -43,13 +43,15 @@ class App {
     }
 
     private configureBot = (): void => {
-        const router = express.Router();
+        const botRouter = express.Router();
 
         this.bot.start();
-        router.post('/webhook', (req, res) => {
+        botRouter.post('/webhook', (req, res) => {
             this.bot.getInstance().handleFacebookData(req.body);
             return res.sendStatus(ResponseCode.OK);
         });
+
+        this.app.use(botRouter);
     }
 }
 
