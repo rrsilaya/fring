@@ -12,7 +12,7 @@ class ChatBot {
 
     private bot = new BotHandler();
 
-    handlePostBacks = async (payload, chat) => {
+    handlePostBacks = async (payload, chat): Promise<void> => {
         const { payload: data } = payload.postback;
         const postbackData = parsePostBack(data);
 
@@ -40,7 +40,7 @@ class ChatBot {
         }
     }
 
-    start = () => {
+    start = (): void => {
         this.instance.hear(/fring (.*)/i, this.bot.search);
         this.instance.on('postback', this.handlePostBacks);
 
@@ -49,7 +49,7 @@ class ChatBot {
         this.instance.setGetStartedButton(this.bot.help);
     }
 
-    getInstance = () => {
+    getInstance = (): Bootbot => {
         return this.instance;
     }
 }

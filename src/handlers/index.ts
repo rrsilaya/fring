@@ -1,3 +1,4 @@
+export * from './firebase-handler';
 export * from './search-handler';
 
 export { default as BotHandler } from './bot-handler';

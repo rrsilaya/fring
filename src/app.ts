@@ -1,12 +1,15 @@
 import * as bodyParser from 'body-parser';
 import * as express from 'express';
 import * as logger from 'morgan';
+import { ResponseCode } from 'utils/constants';
 
+import ChatBot from './chatbot';
 import router from './router';
 
 class App {
     public app: express.Express;
     public port: number;
+    public bot = new ChatBot();
 
     constructor() {
         this.app = express();
@@ -14,6 +17,7 @@ class App {
 
         this.configureServer();
         this.setRoutes();
+        this.configureBot();
     }
 
     public start = (): void => {
@@ -36,6 +40,16 @@ class App {
 
     private setRoutes = (): void => {
         this.app.use(router);
+    }
+
+    private configureBot = (): void => {
+        const router = express.Router();
+
+        this.bot.start();
+        router.post('/webhook', (req, res) => {
+            this.bot.getInstance().handleFacebookData(req.body);
+            return res.sendStatus(ResponseCode.OK);
+        });
     }
 }
 

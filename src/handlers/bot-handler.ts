@@ -14,7 +14,7 @@ class BotHandler {
         ], { typing: true });
     }
 
-    search = async (_, chat, data) => {
+    search = async (_, chat, data): Promise<void> => {
         const [, query] = data.match;
 
         chat.sendAction(BotAction.MARK_SEEN);
@@ -45,7 +45,7 @@ class BotHandler {
         }
     }
 
-    open = async (payload, chat, data) => {
+    open = async (payload, chat, data): Promise<void> => {
         const { data: url } = data;
         const { id: userId } = payload.recipient;
         let title, content;
@@ -94,7 +94,7 @@ class BotHandler {
         }
     }
 
-    readMore = async (payload, chat, data) => {
+    readMore = async (payload, chat, data): Promise<void> => {
         const [threadId, i] = data.data.split('#');
         const { id: userId } = payload.recipient;
         const index = parseFloat(i);
