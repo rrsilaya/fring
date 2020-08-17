@@ -126,7 +126,7 @@ class ChatBot {
             'Hi there! My name is Fring. I can help you search the internet for free. I aim to make information on the internet easily available especially to those without means to get them.',
             'You can call me if you need my help: `fring <search query>`',
             'I\'m still a baby so I can handle 5 search results at most at a time. 😅',
-        ]);
+        ], { typing: true });
     }
 
     handlePostBacks = async (payload, chat) => {
