@@ -17,7 +17,9 @@ class BotHandler {
     search = async (_, chat, data) => {
         const [, query] = data.match;
 
+        chat.sendAction(BotAction.MARK_SEEN);
         chat.sendAction(BotAction.TYPING_ON);
+
         const results = await this.searchHandler.getSearchResults(query);
         chat.sendAction(BotAction.TYPING_OFF);
 

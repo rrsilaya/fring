@@ -1,7 +1,7 @@
 import * as Bootbot from 'bootbot';
 import { BotHandler } from 'handlers';
 import { parsePostBack } from 'utils';
-import { PostBackType, Secrets } from 'utils/constants';
+import { PostBackType, Secrets, BotAction } from 'utils/constants';
 
 class ChatBot {
     private instance = new Bootbot({
@@ -15,6 +15,8 @@ class ChatBot {
     handlePostBacks = async (payload, chat) => {
         const { payload: data } = payload.postback;
         const postbackData = parsePostBack(data);
+
+        chat.sendAction(BotAction.MARK_SEEN);
 
         switch (postbackData.type) {
             case PostBackType.SEARCH_VIEW:
