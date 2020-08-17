@@ -1,10 +1,8 @@
 import { CognitiveServicesCredentials } from 'ms-rest-azure';
 import { v4 as uuidv4 } from 'uuid';
 import WebSearchAPIClient from 'azure-cognitiveservices-websearch';
-import * as dotenv from 'dotenv';
 import * as read from 'node-readability';
-
-dotenv.config();
+import { Secrets } from 'utils/constants';
 
 export interface SearchResult {
     id: string;
@@ -23,7 +21,7 @@ class SearchHandler {
     private client;
     private maxResults;
 
-    constructor(accessKey = process.env.BING_ACCESS_KEY, maxResults = 5) {
+    constructor(accessKey = Secrets.BING_ACCESS_KEY, maxResults = 5) {
         this.credentials = new CognitiveServicesCredentials(accessKey);
         this.client = new WebSearchAPIClient(this.credentials);
         this.maxResults = maxResults;
@@ -44,6 +42,7 @@ class SearchHandler {
         return new Promise((resolve, reject) => {
             read(url, (err, article) => {
                 if (err) {
+                    console.log(err);
                     return reject(err);
                 }
 

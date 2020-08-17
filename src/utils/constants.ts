@@ -1,3 +1,25 @@
+import * as dotenv from 'dotenv';
+
+dotenv.config();
+
+const {
+    ACCESS_TOKEN,
+    VERIFY_TOKEN,
+    APP_SECRET,
+    BING_ACCESS_KEY,
+    FIREBASE_API_KEY,
+    FIREBASE_DATABASE_URL,
+} = process.env;
+
+export const Secrets = {
+    ACCESS_TOKEN: ACCESS_TOKEN,
+    VERIFY_TOKEN: VERIFY_TOKEN,
+    APP_SECRET: APP_SECRET,
+    BING_ACCESS_KEY: BING_ACCESS_KEY,
+    FIREBASE_API_KEY: FIREBASE_API_KEY,
+    FIREBASE_DATABASE_URL: FIREBASE_DATABASE_URL,
+}
+
 export enum BotStatus {
     EVENT_RECEIVED = 'EVENT_RECEIVED',
 }
