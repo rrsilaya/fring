@@ -11,6 +11,8 @@ export enum BotAction {
 export enum PostBackType {
     SEARCH_VIEW = 'SEARCH_VIEW',
     READ_MORE = 'READ_MORE',
+    FACEBOOK_WELCOME = 'FACEBOOK_WELCOME',
+    BOOTBOT_GET_STARTED = 'BOOTBOT_GET_STARTED',
 }
 
 export enum ResponseCode {

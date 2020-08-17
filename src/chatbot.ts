@@ -138,6 +138,13 @@ class ChatBot {
                 await this.handlePaginatedMessage(payload, chat, postbackData);
                 break;
 
+            case PostBackType.FACEBOOK_WELCOME:
+                this.handleHelp(payload, chat);
+                break;
+
+            case PostBackType.BOOTBOT_GET_STARTED:
+                break;
+
             default:
                 chat.say('I can\'t seem to understand what you just said.');
                 break;
@@ -150,6 +157,7 @@ class ChatBot {
 
         // Help functions
         this.instance.hear('help', this.handleHelp);
+        this.instance.setGetStartedButton(this.handleHelp);
     }
 
     getInstance = () => {
