@@ -12,10 +12,11 @@ class FirebaseHandler {
 
     getChunk = async (userId: string, threadId: string, index: number) => {
         const snapshot = await db.ref(`/threads/${userId}/${threadId}/${index}`).once('value');
+        const threadSnapshot = await db.ref(`/threads/${userId}/${threadId}`).once('value');
 
         return {
             text: snapshot.val(),
-            pagesLeft: snapshot.numChildren() - 1,
+            pagesLeft: threadSnapshot.numChildren() - 1,
         };
     }
 }
