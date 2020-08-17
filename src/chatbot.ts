@@ -107,18 +107,18 @@ class ChatBot {
             return;
         }
 
-        const isLastPage = pagesLeft === 0;
-
-        await chat.say({
-            text: message,
-            buttons: !isLastPage
-                ? [{
+        if (pagesLeft < 1) {
+            chat.say(message);
+        } else {
+            await chat.say({
+                text: message,
+                buttons: [{
                     type: 'postback',
                     title: 'Read More',
                     payload: `${PostBackType.READ_MORE}:${threadId}#${index + 1}`,
                 }]
-                : [],
-        });
+            });
+        }
     }
 
     handleHelp = (_, chat) => {
