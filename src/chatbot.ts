@@ -1,6 +1,7 @@
 import * as Bootbot from 'bootbot';
 import * as dotenv from 'dotenv';
-import { SearchHandler } from 'handlers';
+import { v4 as uuidv4 } from 'uuid';
+import { FirebaseHandler, SearchHandler } from 'handlers';
 import {
     BotAction,
     PostBackType,
@@ -23,6 +24,7 @@ class ChatBot {
         appSecret: APP_SECRET,
     });
     private searchHandler = new SearchHandler();
+    private dbHandler = new FirebaseHandler();
 
     handleSearchQuery = async (_, chat, data) => {
         const [, query] = data.match;
@@ -53,28 +55,66 @@ class ChatBot {
         }
     }
 
-    handleViewSearch = async (_, chat, data) => {
+    handleViewSearch = async (payload, chat, data) => {
         const { data: url } = data;
+        const { id: userId } = payload.recipient;
 
         chat.sendAction(BotAction.TYPING_ON);
 
         try {
             const { title, content } = await this.searchHandler.getSiteData(url);
-            chat.sendAction(BotAction.TYPING_OFF);
 
-            let chunks = chunkMessage(`${title}\n---\n${content}`);
+            const chunks = chunkMessage(`${title}\n(Source: ${url})\n---\n${content}`);
+            const criticalText = chunks[0];
+
             if (chunks.length > 1) {
-                chunks = chunks.map((chunk, i) => `${chunk}\n\n[Part ${i + 1} of ${chunks.length}]`);
-            }
+                const threadId = await this.dbHandler.savePaginatedThread(userId, chunks);
+                await this.dbHandler.removeChunk(userId, threadId, 0);
 
-            await chat.say([
-                ...chunks,
-                `Source: ${url}`,
-            ]);
+                chat.sendAction(BotAction.TYPING_OFF);
+
+                await chat.say({
+                    text: criticalText,
+                    buttons: [{
+                        type: 'postback',
+                        title: 'Read More',
+                        payload: `${PostBackType.READ_MORE}:${threadId}#1`,
+                    }],
+                });
+            } else {
+                chat.sendAction(BotAction.TYPING_OFF);
+                chat.say(criticalText);
+            }
         } catch (error) {
-            await chat.say('I\'m experiencing a momentary hiccup. Please bear with me.');
+            chat.sendAction(BotAction.TYPING_OFF);
+            chat.say('I\'m experiencing a momentary hiccup. Please bear with me.');
             console.log(error);
         }
+    }
+
+    handlePaginatedMessage = async (payload, chat, data) => {
+        const [threadId, i] = data.data.split('#');
+        const { id: userId } = payload.recipient;
+        const index = parseFloat(i);
+
+        chat.sendAction(BotAction.TYPING_ON);
+        const message = await this.dbHandler.getChunk(userId, threadId, index);
+        await this.dbHandler.removeChunk(userId, threadId, index);
+        chat.sendAction(BotAction.TYPING_OFF);
+
+        if (!message) {
+            chat.say('I\'m sorry; I forgot what we\'re talking about. What was it again?');
+            return;
+        }
+
+        await chat.say({
+            text: message,
+            buttons: [{
+                type: 'postback',
+                title: 'Read More',
+                payload: `${PostBackType.READ_MORE}:${threadId}#${index + 1}`,
+            }],
+        });
     }
 
     handleHelp = (_, chat) => {
@@ -85,13 +125,17 @@ class ChatBot {
         ]);
     }
 
-    handlePostBacks = (payload, chat) => {
+    handlePostBacks = async (payload, chat) => {
         const { payload: data } = payload.postback;
         const postbackData = parsePostBack(data);
 
         switch (postbackData.type) {
             case PostBackType.SEARCH_VIEW:
-                this.handleViewSearch(payload, chat, postbackData);
+                await this.handleViewSearch(payload, chat, postbackData);
+                break;
+
+            case PostBackType.READ_MORE:
+                await this.handlePaginatedMessage(payload, chat, postbackData);
                 break;
 
             default:
