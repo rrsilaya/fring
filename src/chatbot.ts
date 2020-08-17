@@ -98,7 +98,7 @@ class ChatBot {
         const index = parseFloat(i);
 
         chat.sendAction(BotAction.TYPING_ON);
-        const message = await this.dbHandler.getChunk(userId, threadId, index);
+        const { text: message, pagesLeft } = await this.dbHandler.getChunk(userId, threadId, index);
         await this.dbHandler.removeChunk(userId, threadId, index);
         chat.sendAction(BotAction.TYPING_OFF);
 
@@ -107,13 +107,17 @@ class ChatBot {
             return;
         }
 
+        const isLastPage = pagesLeft === 0;
+
         await chat.say({
             text: message,
-            buttons: [{
-                type: 'postback',
-                title: 'Read More',
-                payload: `${PostBackType.READ_MORE}:${threadId}#${index + 1}`,
-            }],
+            buttons: !isLastPage
+                ? [{
+                    type: 'postback',
+                    title: 'Read More',
+                    payload: `${PostBackType.READ_MORE}:${threadId}#${index + 1}`,
+                }]
+                : [],
         });
     }
 
