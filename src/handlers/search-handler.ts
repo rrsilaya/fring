@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { CognitiveServicesCredentials } from 'ms-rest-azure';
 import { v4 as uuidv4 } from 'uuid';
 import WebSearchAPIClient from 'azure-cognitiveservices-websearch';
@@ -39,18 +40,26 @@ class SearchHandler {
     }
 
     getSiteData(url: string): Promise<PageData> {
-        return new Promise((resolve, reject) => {
-            read(url, (err, article) => {
-                if (err) {
-                    console.log(err);
-                    return reject(err);
-                }
+        return new Promise(async (resolve, reject) => {
+            try {
+                const page = await axios.get(url);
 
-                return resolve({
-                    title: article.title,
-                    content: article.textBody,
-                });
-            })
+                read(page.data, (err, article) => {
+                    if (err) {
+                        console.log(err);
+                        return reject(err);
+                    }
+
+                    return resolve({
+                        title: article.title,
+                        content: article.textBody,
+                    });
+                })
+            } catch (err) {
+                console.log(err);
+                return reject(err);
+            }
+
         });
     }
 }

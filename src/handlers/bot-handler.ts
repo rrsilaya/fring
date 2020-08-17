@@ -46,12 +46,24 @@ class BotHandler {
     open = async (payload, chat, data) => {
         const { data: url } = data;
         const { id: userId } = payload.recipient;
+        let title, content;
 
         chat.sendAction(BotAction.TYPING_ON);
 
         try {
-            const { title, content } = await this.searchHandler.getSiteData(url);
+            const site = await this.searchHandler.getSiteData(url);
 
+            title = site.title;
+            content = site.content;
+        } catch (error) {
+            chat.sendAction(BotAction.TYPING_OFF);
+            chat.say('Seems like I can\'t open the page that you want to read. 😢');
+
+            console.log(error);
+            return;
+        }
+
+        try {
             const chunks = chunkMessage(`${title}\n(Source: ${url})\n---\n${content}`);
             const criticalText = chunks[0];
 
