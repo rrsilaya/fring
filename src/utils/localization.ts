@@ -1,4 +1,4 @@
-import { English } from './translations';
+import { English, Tagalog } from './translations';
 
 export enum Language {
     ENGLISH = 'ENGLISH',
@@ -35,6 +35,7 @@ export interface Translation {
 
 const translations = {
     [Language.ENGLISH]: English,
+    [Language.TAGALOG]: Tagalog,
 }
 
 const _replaceVariables = (text: string, variables = {}): string => {

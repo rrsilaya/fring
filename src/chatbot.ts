@@ -11,7 +11,7 @@ class ChatBot {
     });
 
     private bot = new BotHandler();
-    private language = Language.ENGLISH;
+    private language = Language.TAGALOG;
 
     attachLanguage = (factory) => (payload, chat, data) => {
         chat.language = this.language;
@@ -50,8 +50,8 @@ class ChatBot {
         this.instance.on('postback', this.attachLanguage(this.handlePostBacks));
 
         // Help functions
-        this.instance.hear('help', this.bot.help);
-        this.instance.setGetStartedButton(this.bot.help);
+        this.instance.hear('help', this.attachLanguage(this.bot.help));
+        this.instance.setGetStartedButton(this.attachLanguage(this.bot.help));
     }
 
     getInstance = (): Bootbot => {
