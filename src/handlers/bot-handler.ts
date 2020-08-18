@@ -1,5 +1,6 @@
 import { FirebaseHandler, SearchHandler } from 'handlers';
 import { BotAction, PostBackType } from 'utils/constants';
+import { DialogType, translate } from 'utils/localization';
 import { chunkMessage } from 'utils';
 
 class BotHandler {
@@ -7,11 +8,7 @@ class BotHandler {
     private searchHandler = new SearchHandler();
 
     help = (_, chat) => {
-        chat.say([
-            'Hi there! My name is Fring. I can help you search the internet for free. I aim to make information on the internet easily available especially to those without means to get them.',
-            'You can call me if you need my help: `fring <search query>`',
-            'I\'m still a baby so I can handle 5 search results at most at a time. 😅',
-        ], { typing: true });
+        chat.say(translate[chat.language](DialogType.HELP_PROMPT), { typing: true });
     }
 
     search = async (_, chat, data): Promise<void> => {
@@ -25,23 +22,23 @@ class BotHandler {
 
         if (results.length) {
             const resultSummaries = results.map((result) => ({
-                text: `${result.name}\n---\n${result.description}\n(Source: ${result.url})`,
+                text: `${result.name}\n---\n${result.description}\n${translate[chat.language](DialogType.SOURCE, { url: result.url })}`,
                 buttons: [{
                     type: 'postback',
-                    title: 'Read',
+                    title: translate[chat.language](DialogType.READ_RESULT),
                     payload: `${PostBackType.SEARCH_VIEW}:${result.url}`,
                 }],
             }));
 
             try {
-                await chat.say(`You searched for "${query}". Here are your results:`);
+                await chat.say(translate[chat.language](DialogType.SEARCH_SUMMARY, { searchQuery: query }));
                 await chat.say(resultSummaries);
             } catch (error) {
-                chat.say('I\'m experiencing a momentary hiccup. Please bear with me.');
+                chat.say(translate[chat.language](DialogType.SERVER_ERROR));
                 console.log(error);
             }
         } else {
-            chat.say('I can\'t seem to find anything related to your query. Can you try again?');
+            chat.say(translate[chat.language](DialogType.EMPTY_SEARCH_RESULT));
         }
     }
 
@@ -59,14 +56,14 @@ class BotHandler {
             content = site.content;
         } catch (error) {
             chat.sendAction(BotAction.TYPING_OFF);
-            chat.say('Seems like I can\'t open the page that you want to read. 😢');
+            chat.say(translate[chat.language](DialogType.RESULT_OPEN_ERROR));
 
             console.log(error);
             return;
         }
 
         try {
-            const chunks = chunkMessage(`${title}\n(Source: ${url})\n---\n${content}`);
+            const chunks = chunkMessage(`${title}\n${translate[chat.language](DialogType.SOURCE, { url })}\n---\n${content}`);
             const criticalText = chunks[0];
 
             if (chunks.length > 1) {
@@ -79,7 +76,7 @@ class BotHandler {
                     text: criticalText,
                     buttons: [{
                         type: 'postback',
-                        title: 'Read More',
+                        title: translate[chat.language](DialogType.READ_MORE),
                         payload: `${PostBackType.READ_MORE}:${threadId}#1`,
                     }],
                 });
@@ -89,7 +86,7 @@ class BotHandler {
             }
         } catch (error) {
             chat.sendAction(BotAction.TYPING_OFF);
-            chat.say('I\'m experiencing a momentary hiccup. Please bear with me.');
+            chat.say(translate[chat.language](DialogType.SERVER_ERROR));
             console.log(error);
         }
     }
@@ -107,7 +104,7 @@ class BotHandler {
         chat.sendAction(BotAction.TYPING_OFF);
 
         if (!message) {
-            chat.say('I\'m sorry; I forgot what we\'re talking about. What was it again?');
+            chat.say(translate[chat.language](DialogType.READ_MORE_ERROR));
             return;
         }
 
@@ -120,7 +117,7 @@ class BotHandler {
             text: message,
             buttons: [{
                 type: 'postback',
-                title: 'Read More',
+                title: translate[chat.language](DialogType.READ_MORE),
                 payload: `${PostBackType.READ_MORE}:${threadId}#${index + 1}`,
             }]
         });

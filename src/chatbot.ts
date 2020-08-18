@@ -1,6 +1,6 @@
 import * as Bootbot from 'bootbot';
 import { BotHandler } from 'handlers';
-import { parsePostBack } from 'utils';
+import { Language, parsePostBack } from 'utils';
 import { PostBackType, Secrets, BotAction } from 'utils/constants';
 
 class ChatBot {
@@ -11,6 +11,12 @@ class ChatBot {
     });
 
     private bot = new BotHandler();
+    private language = Language.ENGLISH;
+
+    attachLanguage = (factory) => (payload, chat, data) => {
+        chat.language = this.language;
+        factory(payload, chat, data);
+    }
 
     handlePostBacks = async (payload, chat): Promise<void> => {
         const { payload: data } = payload.postback;
@@ -35,14 +41,13 @@ class ChatBot {
                 break;
 
             default:
-                chat.say('I can\'t seem to understand what you just said.');
                 break;
         }
     }
 
     start = (): void => {
-        this.instance.hear(/fring (.*)/i, this.bot.search);
-        this.instance.on('postback', this.handlePostBacks);
+        this.instance.hear(/fring (.*)/i, this.attachLanguage(this.bot.search));
+        this.instance.on('postback', this.attachLanguage(this.handlePostBacks));
 
         // Help functions
         this.instance.hear('help', this.bot.help);
