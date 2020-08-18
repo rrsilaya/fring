@@ -7,6 +7,7 @@ class BotHandler {
     private searchHandler = new SearchHandler();
 
     help = (_, chat) => {
+        chat.sendAction(BotAction.MARK_SEEN);
         chat.say([
             'Hi there! My name is Fring. I can help you search the internet for free. I aim to make information on the internet easily available especially to those without means to get them.',
             'You can call me if you need my help: `fring <search query>`',
