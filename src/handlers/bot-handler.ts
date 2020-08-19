@@ -24,6 +24,8 @@ class BotHandler {
         const results = await this.searchHandler.getSearchResults(query);
         chat.sendAction(BotAction.TYPING_OFF);
 
+        console.log(`[SEARCH] User searched for "${query}"`);
+
         if (results.length) {
             const resultSummaries = results.map((result) => ({
                 text: `${result.name}\n---\n${result.description}\n(Source: ${result.url})`,
@@ -52,6 +54,7 @@ class BotHandler {
         let title, content;
 
         chat.sendAction(BotAction.TYPING_ON);
+        console.log(`[SEARCH] User opening "${url}"`);
 
         try {
             const site = await this.searchHandler.getSiteData(url);
