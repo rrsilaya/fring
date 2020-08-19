@@ -42,7 +42,7 @@ class SearchHandler {
     getSiteData(url: string): Promise<PageData> {
         return new Promise(async (resolve, reject) => {
             try {
-                const client = await puppeteer.launch();
+                const client = await puppeteer.launch({ args: ['--no-sandbox'] });
                 const page = await client.newPage();
 
                 await page.goto(url);
