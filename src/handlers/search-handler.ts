@@ -1,8 +1,8 @@
-import axios from 'axios';
 import { CognitiveServicesCredentials } from 'ms-rest-azure';
 import { v4 as uuidv4 } from 'uuid';
 import WebSearchAPIClient from 'azure-cognitiveservices-websearch';
 import * as read from 'node-readability';
+import * as puppeteer from 'puppeteer';
 import { Secrets } from 'utils/constants';
 
 export interface SearchResult {
@@ -42,9 +42,14 @@ class SearchHandler {
     getSiteData(url: string): Promise<PageData> {
         return new Promise(async (resolve, reject) => {
             try {
-                const page = await axios.get(url);
+                const client = await puppeteer.launch();
+                const page = await client.newPage();
 
-                read(page.data, (err, article) => {
+                await page.goto(url);
+                const content = await page.content();
+                await client.close()
+
+                read(content, (err, article) => {
                     if (err) {
                         return reject(err);
                     }
