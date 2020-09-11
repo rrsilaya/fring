@@ -13,6 +13,7 @@ class BotHandler {
             'Please use the my name "fring" followed by your query to start searching e.g. fring jose rizal.',
             'Make sure you spelled my name correctly so that I know that you\'re calling me.',
             'I\'m still a baby so I can handle 5 search results at most at a time. 😅',
+            'Please also like the page in case you haven\'t so that you\'ll be updated with future announcements.',
         ], { typing: true });
     }
 
