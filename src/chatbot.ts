@@ -48,6 +48,9 @@ class ChatBot {
         this.instance.hear(/^fring$/i, this.bot.promptSearch);
         this.instance.hear(['help', 'hello', 'hi'], this.bot.help);
         this.instance.setGetStartedButton(this.bot.help);
+
+        // Misc
+        this.instance.hear([/^thank/i, /^salamat/i], this.bot.thanks);
     }
 
     getInstance = (): Bootbot => {

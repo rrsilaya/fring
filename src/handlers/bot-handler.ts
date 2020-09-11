@@ -21,7 +21,15 @@ class BotHandler {
         chat.say([
             'Yes? Would you like to search for something?',
             'Just say my name "fring" followed by your query e.g. fring jose rizal. ♥️',
-        ]);
+        ], { typing: true });
+    }
+
+    thanks = (_, chat) => {
+        chat.sendAction(BotAction.MARK_SEEN);
+        chat.say([
+            'Sure thing! Let me know when I could be of help.',
+            'Please also help me spread the word so that I can help more people. 😊'
+        ], { typing: true });
     }
 
     search = async (_, chat, data): Promise<void> => {
