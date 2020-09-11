@@ -41,10 +41,11 @@ class ChatBot {
     }
 
     start = (): void => {
-        this.instance.hear(/^fring (.*)/i, this.bot.search);
+        this.instance.hear(/^"?fring,? (.*)/i, this.bot.search);
         this.instance.on('postback', this.handlePostBacks);
 
         // Help functions
+        this.instance.hear(/^fring$/i, this.bot.promptSearch);
         this.instance.hear(['help', 'hello', 'hi'], this.bot.help);
         this.instance.setGetStartedButton(this.bot.help);
     }

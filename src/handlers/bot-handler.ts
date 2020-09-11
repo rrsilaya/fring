@@ -10,10 +10,18 @@ class BotHandler {
         chat.sendAction(BotAction.MARK_SEEN);
         chat.say([
             'Hi there! My name is Fring. I can help you search the internet for free. I aim to make information on the internet easily available especially to those without means to get them.',
-            'Please use the keyword "fring" followed by your query to start searching e.g. "fring jose rizal".',
+            'Please use the my name "fring" followed by your query to start searching e.g. fring jose rizal.',
             'Make sure you spelled my name correctly so that I know that you\'re calling me.',
             'I\'m still a baby so I can handle 5 search results at most at a time. 😅',
         ], { typing: true });
+    }
+
+    promptSearch = (_, chat) => {
+        chat.sendAction(BotAction.MARK_SEEN);
+        chat.say([
+            'Yes? Would you like to search for something?',
+            'Just say my name "fring" followed by your query e.g. fring jose rizal. ♥️',
+        ]);
     }
 
     search = async (_, chat, data): Promise<void> => {
