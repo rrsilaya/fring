@@ -52,7 +52,7 @@ class BotHandler {
 
         console.log(`[SEARCH] User searched for "${query}"`);
 
-        if (results.length) {
+        if (results && results.length) {
             const resultSummaries = results.map((result) => ({
                 text: `${result.name}\n---\n${result.description}\n(Source: ${result.url})`,
                 buttons: [{

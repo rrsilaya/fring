@@ -31,7 +31,7 @@ class SearchHandler {
     async getSearchResults(keyword: string): Promise<Array<SearchResult>> {
         const result = await this.client.web.search(keyword);
 
-        return result.webPages.value.slice(0, this.maxResults).map((result): SearchResult => ({
+        return result.webPages?.value.slice(0, this.maxResults).map((result): SearchResult => ({
             id: uuidv4(),
             name: result.name,
             url: result.url,
