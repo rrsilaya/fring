@@ -12,7 +12,7 @@ class BotHandler {
             'Hi there! My name is Fring. I can help you search the internet for free. I aim to make information on the internet easily available especially to those without means to get them.',
             'Please use my name "fring" followed by your query to start searching e.g. fring jose rizal.',
             'Make sure you spelled my name correctly so that I know that you\'re calling me.',
-            'I\'m still a baby so I can handle 5 search results at most at a time. 😅',
+            'I\'m still a baby so I can handle 10 search results at most at a time. 😅',
             'Please also like the page in case you haven\'t so that you\'ll be updated with future announcements.',
         ], { typing: true });
     }
