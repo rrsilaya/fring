@@ -33,6 +33,14 @@ class BotHandler {
         ], { typing: true });
     }
 
+    hintWrongFormat = (_, chat) => {
+        chat.sendAction(BotAction.MARK_SEEN);
+        chat.say([
+            'Hello! Please use the keyword "fring" followed by your query to start searching e.g. fring jose rizal.',
+            'Make sure to separate my name and your search query with a space so that I can recognize your query.',
+        ], { typing: true });
+    }
+
     search = async (_, chat, data): Promise<void> => {
         const [, query] = data.match;
 

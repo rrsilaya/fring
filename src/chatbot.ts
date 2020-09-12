@@ -51,6 +51,14 @@ class ChatBot {
 
         // Misc
         this.instance.hear([/^thank/i, /^salamat/i], this.bot.thanks);
+        this.instance.hear([
+            /^who/i,
+            /^what/i,
+            /^where/i,
+            /^when/i,
+            /^why/i,
+            /^how/i,
+        ], this.bot.hintWrongFormat);
     }
 
     getInstance = (): Bootbot => {
