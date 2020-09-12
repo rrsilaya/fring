@@ -88,10 +88,12 @@ class BotHandler {
             title = site.title;
             content = site.content;
         } catch (error) {
+            console.log(error);
+
             chat.sendAction(BotAction.TYPING_OFF);
             chat.say('Seems like I can\'t open the page that you want to read. 😢');
 
-            console.log(error);
+            console.log(`[ERROR] Failed opening "${url}"`);
             return;
         }
 

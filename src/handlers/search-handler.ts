@@ -46,7 +46,6 @@ class SearchHandler {
 
                 read(page.data, (err, article) => {
                     if (err) {
-                        console.log(err);
                         return reject(err);
                     }
 
@@ -56,7 +55,6 @@ class SearchHandler {
                     });
                 })
             } catch (err) {
-                console.log(err);
                 return reject(err);
             }
 
