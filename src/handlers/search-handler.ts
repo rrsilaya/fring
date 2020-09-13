@@ -42,7 +42,7 @@ class SearchHandler {
     getSiteData(url: string): Promise<PageData> {
         return new Promise(async (resolve, reject) => {
             try {
-                const page = await axios.get(url);
+                const page = await axios.get(url, { timeout: 20 * 1000 });
 
                 read(page.data, (err, article) => {
                     if (err) {
