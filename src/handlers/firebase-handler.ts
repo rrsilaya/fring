@@ -5,6 +5,12 @@ export interface ChunkData {
     pagesLeft: number,
 }
 
+/**
+ * We use Firebase for now to minimize production cost. In a more
+ * scalable setup, this should be setup using a relational database.
+ * Currently, we only persist fetched pages in order for the pagination
+ * to work.
+ */
 class FirebaseHandler {
     savePaginatedThread = async (userId: string, messages: Array<string>): Promise<string|null> => {
         const ref = await db.ref(`/threads/${userId}`).push(messages);
